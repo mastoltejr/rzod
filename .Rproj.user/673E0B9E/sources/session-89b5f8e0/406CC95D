@@ -1,0 +1,26 @@
+{
+    "id": "406CC95D",
+    "path": "~/Documents/Code/rzod/R/hello.R",
+    "project_path": "R/hello.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": true,
+    "created": 1675993168189.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "24,3",
+        "scrollLine": "11"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1675993165,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1675994764647,
+    "read_only": false,
+    "read_only_alternatives": []
+}
