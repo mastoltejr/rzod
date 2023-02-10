@@ -19,32 +19,35 @@ rzodSchema <- function(...){
   return(s)
 }
 
-any <- function(schema = rzodSchema()) {
+z.parse <- function(obj = NA, schema = rzodSchema()){
   if (class(schema) != 'rzodSchema') {
     stop('argument to any() is not of class rzodSchema')
   }
 
-  do.call(rzodSchema, modifyList(schema, list(
-    notNa = list(
-      check = function(x) {
-        !is.na(x)
-      },
-      errorMsg = 'item can not be NA'
-    ),
-    single = list(
-      check = function(x) {
-        length(x) == 1
-      },
-      errorMsg = 'item is not a single value'
-    )
-  )))
+  for(n in names(schema)){
+    s <- schema[[n]]
+    if(!s$check(obj)){
+      stop(ifelse(is.function(s$errorMsg),s$errorMsg(obj),s$errorMsg))
+    }
+  }
+
+  return(obj)
 }
 
-string <- function(){
-  c(
-    any(),
-    class =
-  )
+z.safeParse <- function(obj = NA, schema = rzodSchema()){
+  if (class(schema) != 'rzodSchema') {
+    stop('argument to any() is not of class rzodSchema')
+  }
+
+  for(n in names(schema)){
+    s <- schema[[n]]
+    if(!s$check(obj)){
+      return(list(success=F,error=ifelse(is.function(s$errorMsg),s$errorMsg(obj),s$errorMsg)))
+    }
+  }
+
+  return(list(success=T,data=obj))
 }
 
-x <- list(a = '1')
+
+
