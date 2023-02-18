@@ -1,36 +1,36 @@
-z.min <- function(schema = rzodSchema(), value = 1) {
+z.max <- function(schema = rzodSchema(), value = 1) {
   if (class(schema) != 'rzodSchema') {
-    stop('argument to any() is not of class rzodSchema')
+    stop('argument to max() is not of class rzodSchema')
   }
 
   do.call(rzodSchema, modifyList(schema, list(
-    length = list(
+    length = rzodSchema(
       check = function(x) {
         if (schema$base == 'character' | schema$base == 'string') {
-          return(nchar(x) >= value)
+          return(nchar(x) <= value)
         }
 
         if (schema$base == 'number') {
-          return(x >= value)
+          return(x <= value)
         }
 
         if (schema$base == 'array') {
-          return(length(x) >= value)
+          return(length(x) <= value)
         }
 
         return(F)
       },
       errorMsg = function(x) {
         if (schema$base == 'character' | schema$base == 'string') {
-          return(paste0("'", x, "' is fewer than ", value, " characters"))
+          return(paste0("'", x, "' is greater than ", value, " characters"))
         }
 
         if (schema$base == 'number') {
-          return(paste0(x, " is less than ", value))
+          return(paste0(x, " is greater than ", value))
         }
 
         if (schema$base == 'array') {
-          return(paste0(x, " has less than ", value,' element(s)'))
+          return(paste0(x, " has more than ", value,' element(s)'))
         }
 
         return(paste0('max() can not be applied to ',schema$base,'()'))
@@ -39,4 +39,4 @@ z.min <- function(schema = rzodSchema(), value = 1) {
   )))
 }
 
-# TODO add min for Dates
+# TODO add max for Dates

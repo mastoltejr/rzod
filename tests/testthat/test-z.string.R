@@ -15,3 +15,8 @@ test_that("string() rejects vectors", {
 test_that("string() rejects NA", {
   expect_error(z.parse(as.character(NA),z.string()))
 })
+
+test_that("z.coerce.string() coerces to a string", {
+  expect_equal(z.parse(123,z.coerce.string()), '123')
+  expect_equal(z.parse(F,z.coerce.string()), 'FALSE')
+})
