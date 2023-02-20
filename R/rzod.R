@@ -48,7 +48,7 @@ rzodSchema <- function(...){
   args <- list(...)
   while(length(args) == 1 & is.null(names(args)) & is.list(head(args,1))){args <- args[[1]]}
   if(length(args) > 0 & is.null(names(args))){stop('rzodSchemas must have named values')}
-  if(is.null(args$base)){args$base <- 'character'}
+  if(is.null(args$base)){args$base <- 'empty'}
   class(args) <- 'rzodSchema'
   return(args)
 }
@@ -64,9 +64,40 @@ rzodChildren <- function(...){
 
 z.parse <- function(obj = NA, schema = rzodSchema()){
   if (class(schema) != 'rzodSchema') {
-    print(class(schema))
-    print(names(schema))
     stop('argument to parse() is not of class rzodSchema')
+  }
+
+  if(!is.null(schema$coerce)){
+    obj <- schema$coerce(obj)
+  }
+
+  if(is.null(obj) & schema$base != 'null'){
+    stop('parsed object is NULL')
+  }
+
+  for(n in names(schema)){
+    s <- schema[[n]]
+    # print(paste(c(n,class(s)), collapse=" => "))
+    if(!class(s) %in% c('rzodSchema','rzodChildren')){ next }
+
+    if(class(s) == 'rzodChildren'){
+      # print('vvvvvvvvv')
+      for(n2 in names(s)){
+        # print(paste(c(n2)))
+        z.parse(obj[[n2]], s[[n2]])
+        # print('=================')
+      }
+    } else if(!s$check(obj)){
+      stop(ifelse(is.function(s$errorMsg),s$errorMsg(obj),s$errorMsg))
+    }
+  }
+
+  return(obj)
+}
+
+z.safeParse <- function(obj = NA, schema = rzodSchema()){
+  if (class(schema) != 'rzodSchema') {
+    stop('argument to safeParse() is not of class rzodSchema')
   }
 
   if(!is.null(schema$coerce)){
@@ -86,24 +117,6 @@ z.parse <- function(obj = NA, schema = rzodSchema()){
         # print('=================')
       }
     } else if(!s$check(obj)){
-      stop(ifelse(is.function(s$errorMsg),s$errorMsg(obj),s$errorMsg))
-    }
-
-
-  }
-
-  return(obj)
-}
-
-z.safeParse <- function(obj = NA, schema = rzodSchema()){
-  if (class(schema) != 'rzodSchema') {
-    stop('argument to any() is not of class rzodSchema')
-  }
-
-  for(n in names(schema)){
-    s <- schema[[n]]
-    if(class(s) != 'rzodSchema'){ next }
-    if(!s$check(obj)){
       return(list(success=F,error=ifelse(is.function(s$errorMsg),s$errorMsg(obj),s$errorMsg)))
     }
   }

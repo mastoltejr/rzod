@@ -3,7 +3,8 @@ z.date <- function() {
     base = 'date',
     cls = rzodSchema(
       check = function(x) {
-        class(x) == 'Date' #|  class(Sys.time()) == c('POSIXct','POSIXt')
+        all(sapply(x,function(xx) class(xx) == 'Date'))
+        # class(x) == 'Date' #|  class(Sys.time()) == c('POSIXct','POSIXt')
       },
       errorMsg = 'item is not a date'
     )

@@ -1,7 +1,7 @@
 z.null <- function() {
   do.call(rzodSchema,list(
     base = 'null',
-    cls = rzodSchema(check = is.null,
+    cls = rzodSchema(check = function(x){all(sapply(x,is.null))},
                errorMsg = 'item is not NULL')
   ))
 }

@@ -1,7 +1,7 @@
 z.boolean <- function() {
   do.call(rzodSchema, modifyList(z.any(), list(
     base = 'boolean',
-    cls = rzodSchema(check = is.logical,
+    cls = rzodSchema(check = function(x){all(sapply(x,is.logical))},
                errorMsg = 'item is not a boolean')
   )))
 }

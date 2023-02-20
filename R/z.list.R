@@ -1,18 +1,21 @@
 z.list <- function(...) {
-  objSchema <- rzodChildren(...)
-  do.call(rzodSchema, list(
+  rzodSchema(
     base = 'list',
     cls = rzodSchema(check = is.list,
                      errorMsg = 'item is not a list'),
 
-    rzodChildren = objSchema
-  ))
+    rzodChildren = rzodChildren(...)
+  )
 }
 
 z.coerce.list <- function(objSchema = list(), defaults = list()) {
-  do.call(rzodSchema, c(z.list(objSchema), coerce = function(x) {
-    lapply(names(objSchema), function(n) {
+  s <- z.list(rzodSchema(objSchema))
+  s$coerce <- function(x){
+    ret <- lapply(names(objSchema), function(n) {
       x[[n]] %||% defaults[[n]] %||% NA
     })
-  }))
+    names(ret) <- names(objSchema)
+    return(ret)
+  }
+  return(s)
 }

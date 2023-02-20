@@ -2,7 +2,7 @@ z.any <- function() {
   rzodSchema(
     notNa = rzodSchema(
       check = function(x) {
-        !is.na(x[[1]])
+        !any(is.na(x))
       },
       errorMsg = 'item can not be NA'
     ),
